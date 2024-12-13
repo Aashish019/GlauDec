@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+    push:
+        branches: ["main"]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v1
+
+            - name: Build Docker image
+              env:
+                  IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:$(date +%s)-${{ github.sha }}"
+              run: |
+                  docker build -t $IMAGE_TAG -f Dockerfile .
+
+            - name: Push Docker image to ECR
+              env:
+                  IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:$(date +%s)-${{ github.sha }}"
+              run: |
+                  docker push $IMAGE_TAG
