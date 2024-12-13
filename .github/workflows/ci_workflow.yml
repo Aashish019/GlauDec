@@ -17,7 +17,7 @@ jobs:
               env:
                   IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:$(date +%s)-${{ github.sha }}"
               run: |
-                  docker build . -t $IMAGE_TAG -f Dockerfile
+                  docker build . -t $IMAGE_TAG -f dockerfile
 
             - name: Push Docker image to Docker hub
               env:
