@@ -19,8 +19,14 @@ jobs:
               run: |
                   docker build . -t $IMAGE_TAG -f dockerfile
 
-            # - name: Push Docker image to Docker hub
-            #   env:
-            #       IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:${{ github.sha }}"
-            #   run: |
-            #       docker push $IMAGE_TAG
+            - name: login to docker registry
+              uses: docker/login-action@v3
+              with:
+                  username: ${{ secrets.DOCKER_ID }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Push Docker image to Docker hub
+              env:
+                  IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:${{ github.sha }}"
+              run: |
+                  docker push $IMAGE_TAG
