@@ -1,25 +1,19 @@
-# Use an official Python runtime as a parent image
+FROM python:3.9-slim as builder
+
+RUN python3 -m venv /opt/venv
+COPY requirements.txt .
+RUN /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+
 FROM python:3.9-slim
 
-# Update and install required packages
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y wkhtmltopdf && \
-    apt-get clean
+RUN apt-get update && apt-get install -y --no-install-recommends wkhtmltopdf && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory in the container
 WORKDIR /app
-
-# Copy the current directory contents into the container at /app
+COPY --from=builder /opt/venv /opt/venv
 COPY . /app
 
-# Create a virtual environment and install the required packages
-RUN python3 -m venv myenv && \
-    myenv/bin/pip install --no-cache-dir -r requirements.txt
-
-# Make port 8501 available to the world outside this container
+ENV PATH="/opt/venv/bin:$PATH"
 EXPOSE 8501
-
-# Run the Streamlit app when the container launches using the virtual environment
-CMD ["myenv/bin/python", "-m", "streamlit", "run", "GlauDec.py"]
-
+CMD ["python", "-m", "streamlit", "run", "GlauDec.py"]
