@@ -15,12 +15,12 @@ jobs:
 
             - name: Build Docker image
               env:
-                  IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:$(date +%s)-${{ github.sha }}"
+                  IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:${{ github.sha }}"
               run: |
                   docker build . -t $IMAGE_TAG -f dockerfile
 
-            - name: Push Docker image to Docker hub
-              env:
-                  IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:$(date +%s)-${{ github.sha }}"
-              run: |
-                  docker push $IMAGE_TAG
+            # - name: Push Docker image to Docker hub
+            #   env:
+            #       IMAGE_TAG: "${{ secrets.DOCKER_ID }}/glaudoc:${{ github.sha }}"
+            #   run: |
+            #       docker push $IMAGE_TAG
